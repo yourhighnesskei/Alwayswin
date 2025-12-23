@@ -6762,7 +6762,7 @@ function Library:CreateWindow(WindowInfo)
         if Icon then
             if tonumber(Icon) then
                 Icon = {
-                    Url = tonumber(Icon),
+                    Url = string.format("rbxassetid://%s", tostring(Icon)),
                     Custom = false,
                     ImageRectOffset = Vector2.new(0, 0),
                     ImageRectSize = Vector2.new(0, 0)
