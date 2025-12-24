@@ -47,7 +47,7 @@ local Config = {
             Enabled = false,
             Color1 = Color3.fromRGB(0, 255, 0),
             Color2 = Color3.fromRGB(255, 255, 0),
-            Color3 = ColfromRGB(255, 0, 0)
+            Color3 = Color3.fromRGB(255, 0, 0)
         },
         Armor = {
             Enabled = false,
@@ -789,4 +789,5 @@ connections.main.RenderStepped =
 
 
 return Config
+
 
