@@ -34,7 +34,7 @@ local Config = {
             Casing = "lowercase"
         },
         Distance = {
-            Enabled = true,
+            Enabled = false,
             Color = Color3.fromRGB(255, 255, 255)
         }
     },
@@ -789,3 +789,4 @@ connections.main.RenderStepped =
 
 
 return Config
+
