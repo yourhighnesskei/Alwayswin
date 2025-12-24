@@ -6,8 +6,8 @@ local Skyboxes = {
         SkyboxLf = "rbxassetid://1876543392",
         SkyboxRt = "rbxassetid://1876543764",
         SkyboxUp = "rbxassetid://1876544642"
-    }
-    
+    },
+	
     PurpleDay = {
         SkyboxBk = "rbxassetid://296908715",
         SkyboxDn = "rbxassetid://296908724",
@@ -546,7 +546,7 @@ local Skyboxes = {
         SkyboxLf = "http://www.roblox.com/asset/?id=16563485362",
         SkyboxRt = "http://www.roblox.com/asset/?id=16563487078",
         SkyboxUp = "http://www.roblox.com/asset/?id=16563489821",
-    },
+    }
 }
 
 return Skyboxes
