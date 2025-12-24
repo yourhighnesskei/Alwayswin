@@ -35,7 +35,7 @@ local Config = {
         },
         Distance = {
             Enabled = true,
-            Color = Color3.fromRGB(255, 255, 255),
+            Color = Color3.fromRGB(255, 255, 255)
         }
     },
     Bars = {
