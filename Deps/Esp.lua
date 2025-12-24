@@ -29,14 +29,13 @@ local Config = {
             Casing = "lowercase"
         },
         Weapon = {
-            Enabled = true,
+            Enabled = false,
             Color = Color3.fromRGB(255, 255, 255),
             Casing = "lowercase"
         },
         Distance = {
-            Enabled = false,
+            Enabled = true,
             Color = Color3.fromRGB(255, 255, 255),
-            Casing = "lowercase"
         }
     },
     Bars = {
@@ -48,7 +47,7 @@ local Config = {
             Enabled = false,
             Color1 = Color3.fromRGB(0, 255, 0),
             Color2 = Color3.fromRGB(255, 255, 0),
-            Color3 = Color3.fromRGB(255, 0, 0)
+            Color3 = ColfromRGB(255, 0, 0)
         },
         Armor = {
             Enabled = false,
@@ -212,6 +211,7 @@ utility.funcs.make_text = function(p)
     d.TextSize = 10
     d.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
     d.FontFace = Fonts[Config.Text.Font]
+    d.Text = ""
     return d
 end
 
@@ -630,7 +630,7 @@ utility.funcs.update =
             distanceLabel.Position = UDim2.new(0, baseX - (distanceLabel.AbsoluteSize.X / 2), 0, distancePos)
             distanceLabel.TextColor3 = Config.Text.Distance.Color
             distanceLabel.FontFace = Fonts[Config.Text.Font]
-            distanceLabel.Text = utility.funcs.get_case(string.format("[%.0fM]", distance * 0.28), Config.Text.Distance.Casing)
+            distanceLabel.Text = string.format("[%.0f]", distance * 0.28)
         else
             distanceLabel.Visible = false
         end
@@ -786,5 +786,6 @@ connections.main.RenderStepped =
         end
     end
 )
+
 
 return Config
