@@ -28,6 +28,9 @@ local Toggles = {}
 local Options = {}
 local Tooltips = {}
 
+getgenv().Toggles = Toggles
+getgenv().Options = Options
+
 local BaseURL = "https://raw.githubusercontent.com/yourhighnesskei/Alwayswin/refs/heads/main"
 local CustomImageManager = {}
 local CustomImageManagerAssets = {
