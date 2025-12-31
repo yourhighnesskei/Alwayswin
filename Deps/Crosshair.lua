@@ -113,8 +113,8 @@ runservice.PostSimulation:Connect(function()
             crosshair.position
         )
 
-        local text1 = drawings.text.Text
-        local text2 = drawings.text.Text
+        local text1 = drawings.text.Text1
+        local text2 = drawings.text.Text2
         local indicator = drawings.text.Indicator
 
         text1.Visible = crosshair.text
@@ -179,3 +179,4 @@ runservice.PostSimulation:Connect(function()
 end)
 
 return crosshair
+
