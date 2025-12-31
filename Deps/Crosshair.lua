@@ -54,6 +54,8 @@ drawings.text.Text2.Size = crosshair.textsize
 drawings.text.Text2.Font = 2
 drawings.text.Text2.Outline = true
 drawings.text.Text2.Text = ".live"
+drawings.text.Text2.Transparency = 0
+drawings.text.Text2.Color = crosshair.textcolor
 drawings.text.Text2.Center = false
 
 drawings.text.Indicator.Size = crosshair.textsize
@@ -181,3 +183,4 @@ runservice.PostSimulation:Connect(function()
 end)
 
 return crosshair
+
