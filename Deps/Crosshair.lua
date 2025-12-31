@@ -10,9 +10,9 @@ getgenv().crosshair = {
     textsize = 14,
     textoffset = 75,
     refreshrate = 0,
-    mode = "Middle", -- Middle, Mouse, Custom
+    mode = "Middle",
     position = Vector2.new(0, 0),
-    lines = 4, -- Change this value to test different line counts
+    lines = 4,
     width = 1.8,
     length = 15,
     radius = 11,
@@ -20,8 +20,8 @@ getgenv().crosshair = {
     spin = false,
     spin_speed = 150,
     spin_max = 340,
-    spin_style = Enum.EasingStyle.Circular, -- Linear for normal smooth spin
-    resize = false, -- animate the length
+    spin_style = Enum.EasingStyle.Circular,
+    resize = false,
     resize_speed = 150,
     resize_min = 5,
     resize_max = 22,
@@ -48,12 +48,13 @@ drawings.text.Text1.Font = 2
 drawings.text.Text1.Outline = true
 drawings.text.Text1.Text = "Alwayswin"
 drawings.text.Text1.Color = Color3.fromRGB(255, 255, 255)
-drawings.text.Text1.Center = true
+drawings.text.Text1.Center = false
 
-drawings.text.Text2.Size = 13
+drawings.text.Text2.Size = crosshair.textsize
 drawings.text.Text2.Font = 2
 drawings.text.Text2.Outline = true
 drawings.text.Text2.Text = ".live"
+drawings.text.Text2.Center = false
 
 drawings.text.Indicator.Size = crosshair.textsize
 drawings.text.Indicator.Font = 2
@@ -61,13 +62,13 @@ drawings.text.Indicator.Outline = true
 drawings.text.Indicator.Center = true
 drawings.text.Indicator.Color = Color3.new(1, 1, 1)
 
-local currentLines = crosshair.lines -- Track the current number of lines
-local currentWidth = crosshair.width -- Track the current width
+local currentLines = crosshair.lines
+local currentWidth = crosshair.width
 
 local function createCrosshairLines()
     for _, line in pairs(drawings.crosshair) do
-        line[1]:Remove() -- Remove outline
-        line[2]:Remove() -- Remove inline
+        line[1]:Remove()
+        line[2]:Remove()
     end
     drawings.crosshair = {}
 
@@ -75,18 +76,18 @@ local function createCrosshairLines()
         local outline = Drawing.new('Line')
         outline.Color = Color3.new(0, 0, 0)
         outline.Thickness = crosshair.width + 2
-        outline.ZIndex = 1 -- Lower ZIndex for outline
+        outline.ZIndex = 1
 
         local inline = Drawing.new('Line')
         inline.Color = crosshair.color
         inline.Thickness = crosshair.width
-        inline.ZIndex = 2 -- Higher ZIndex for inline
+        inline.ZIndex = 2
 
         drawings.crosshair[idx] = {outline, inline}
     end
 end
 
-createCrosshairLines() -- Initialize crosshair lines
+createCrosshairLines()
 
 function solve(angle, radius)
     return Vector2.new(
@@ -104,7 +105,7 @@ runservice.PostSimulation:Connect(function()
         if currentLines ~= crosshair.lines or currentWidth ~= crosshair.width then
             currentLines = crosshair.lines
             currentWidth = crosshair.width
-            createCrosshairLines() -- Recreate the lines if the count or width has changed
+            createCrosshairLines()
         end
 
         local position = (
@@ -124,13 +125,14 @@ runservice.PostSimulation:Connect(function()
         local center = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 
         if crosshair.text then
-            text_1.Position = Vector2.new(center.X, center.Y + crosshair.textoffset)
-            text_2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X)
+            local total_width = text_1.TextBounds.X + text_2.TextBounds.X
+            
+            text_1.Position = Vector2.new(center.X - (total_width / 2), center.Y + crosshair.textoffset)
+            text_2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X, 0)
             text_2.Color = crosshair.textcolor
             
-            local midpoint_x = center.X + (text_1.TextBounds.X / 2)
             indicator.Text = crosshair.indicatortext
-            indicator.Position = Vector2.new(midpoint_x, center.Y + crosshair.textoffset + 15)
+            indicator.Position = Vector2.new(center.X, center.Y + crosshair.textoffset + 15)
             
             if crosshair.textpulse then
                 local sine = math.abs(math.sin(tick() * 4))
@@ -142,10 +144,10 @@ runservice.PostSimulation:Connect(function()
         
         if crosshair.enabled then
             for idx = 1, crosshair.lines do
-                local outline = drawings.crosshair[idx][1] -- Outline
-                local inline = drawings.crosshair[idx][2]  -- Inline
+                local outline = drawings.crosshair[idx][1]
+                local inline = drawings.crosshair[idx][2]
 
-                local angle = (idx - 1) * (360 / crosshair.lines) -- Distribute angles evenly
+                local angle = (idx - 1) * (360 / crosshair.lines)
                 local length = crosshair.length
 
                 if crosshair.spin then
@@ -171,13 +173,11 @@ runservice.PostSimulation:Connect(function()
             end
         else
             for idx = 1, crosshair.lines do
-                drawings.crosshair[idx][1].Visible = false -- Outline
-                drawings.crosshair[idx][2].Visible = false -- Inline
+                drawings.crosshair[idx][1].Visible = false
+                drawings.crosshair[idx][2].Visible = false
             end
         end
     end
 end)
 
 return crosshair
-
-
