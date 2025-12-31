@@ -4,7 +4,6 @@ getgenv().crosshair = {
     enabled = false,
     text = false,
     textcolor = Color3.fromRGB(189, 172, 255),
-    textpulse = false,
     indicator = false,
     indicatortext = "Unsafe",
     textsize = 14,
@@ -131,15 +130,9 @@ runservice.PostSimulation:Connect(function()
             text_1.Position = Vector2.new(center.X - (total_width / 2), center.Y + crosshair.textoffset)
             text_2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X, 0)
             text_2.Color = crosshair.textcolor
-            text_2.Transparency = 0
             
             indicator.Text = crosshair.indicatortext
             indicator.Position = Vector2.new(center.X, center.Y + crosshair.textoffset + 15)
-            
-            if crosshair.textpulse then
-                local sine = math.abs(math.sin(tick() * 4))
-                text_2.Transparency = 1 - sine
-            end
         end
         
         if crosshair.enabled then
@@ -181,5 +174,6 @@ runservice.PostSimulation:Connect(function()
 end)
 
 return crosshair
+
 
 
