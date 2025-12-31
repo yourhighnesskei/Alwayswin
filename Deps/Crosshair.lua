@@ -4,12 +4,13 @@ getgenv().crosshair = {
     enabled = false,
     text = false,
     textcolor = Color3.fromRGB(189, 172, 255),
+    textpulse = false,
     indicator = false,
     indicatortext = "Unsafe",
     textsize = 14,
     textoffset = 75,
     refreshrate = 0,
-    mode = 'Middle', -- Middle, Mouse, Custom
+    mode = "Middle", -- Middle, Mouse, Custom
     position = Vector2.new(0, 0),
     lines = 4, -- Change this value to test different line counts
     width = 1.8,
@@ -36,17 +37,23 @@ local last_render = 0
 local drawings = {
     crosshair = {},
     text = {
-        Text = Drawing.new('Text'),
+        Text1 = Drawing.new('Text'),
+        Text2 = Drawing.new('Text'),
         Indicator = Drawing.new('Text')
     }
 }
 
-drawings.text.Text.Size = crosshair.textsize
-drawings.text.Text.Font = 2
-drawings.text.Text.Outline = true
-drawings.text.Text.Text = "Alwayswin"
-drawings.text.Text.Color = crosshair.textcolor
-drawings.text.Text.Center = true
+drawings.text.Text1.Size = crosshair.textsize
+drawings.text.Text1.Font = 2
+drawings.text.Text1.Outline = true
+drawings.text.Text1.Text = "Alwayswin"
+drawings.text.Text1.Color = Color3.fromRGB(255, 255, 255)
+drawings.text.Text1.Center = true
+
+drawings.text.Text2.Size = 13
+drawings.text.Text2.Font = 2
+drawings.text.Text2.Outline = true
+drawings.text.Text2.Text = ".live"
 
 drawings.text.Indicator.Size = crosshair.textsize
 drawings.text.Indicator.Font = 2
@@ -106,20 +113,31 @@ runservice.PostSimulation:Connect(function()
             crosshair.position
         )
 
-        local text = drawings.text.Text
+        local text1 = drawings.text.Text
+        local text2 = drawings.text.Text
         local indicator = drawings.text.Indicator
 
-        text.Visible = crosshair.text
+        text1.Visible = crosshair.text
+        text2.Visible = crosshair.text
         indicator.Visible = crosshair.text and crosshair.indicator
         
         local center = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 
         if crosshair.text then
-            text.Position = Vector2.new(center.X, center.Y + crosshair.textoffset)
-            text.Color = crosshair.textcolor
+            text1.Position = Vector2.new(center.X, center.Y + crosshair.textoffset)
+            text2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X)
+            text2.Color = crosshair.textcolor
             
+            local midpoint_x = center.X + (text_1.TextBounds.X / 2)
             indicator.Text = crosshair.indicatortext
-            indicator.Position = Vector2.new(center.X, center.Y + crosshair.textoffset + 15)
+            indicator.Position = Vector2.new(midpoint_x, center.Y + crosshair.textoffset + 15)
+            
+            if crosshair.textpulse then
+                local sine = math.abs(math.sin(tick() * 4))
+                text2.Transparency = sine
+            else
+                text2.Transparency = 0
+            end
         end
         
         if crosshair.enabled then
