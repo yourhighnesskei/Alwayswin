@@ -113,20 +113,20 @@ runservice.PostSimulation:Connect(function()
             crosshair.position
         )
 
-        local text1 = drawings.text.Text1
-        local text2 = drawings.text.Text2
+        local text_1 = drawings.text.Text1
+        local text_2 = drawings.text.Text2
         local indicator = drawings.text.Indicator
 
-        text1.Visible = crosshair.text
-        text2.Visible = crosshair.text
+        text_1.Visible = crosshair.text
+        text_2.Visible = crosshair.text
         indicator.Visible = crosshair.text and crosshair.indicator
         
         local center = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 
         if crosshair.text then
-            text1.Position = Vector2.new(center.X, center.Y + crosshair.textoffset)
-            text2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X)
-            text2.Color = crosshair.textcolor
+            text_1.Position = Vector2.new(center.X, center.Y + crosshair.textoffset)
+            text_2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X)
+            text_2.Color = crosshair.textcolor
             
             local midpoint_x = center.X + (text_1.TextBounds.X / 2)
             indicator.Text = crosshair.indicatortext
@@ -134,9 +134,9 @@ runservice.PostSimulation:Connect(function()
             
             if crosshair.textpulse then
                 local sine = math.abs(math.sin(tick() * 4))
-                text2.Transparency = sine
+                text_2.Transparency = sine
             else
-                text2.Transparency = 0
+                text_2.Transparency = 0
             end
         end
         
@@ -179,4 +179,5 @@ runservice.PostSimulation:Connect(function()
 end)
 
 return crosshair
+
 
