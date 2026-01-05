@@ -52,7 +52,7 @@ drawings.text.Text1.Center = false
 drawings.text.Text2.Size = crosshair.textsize
 drawings.text.Text2.Font = 2
 drawings.text.Text2.Outline = true
-drawings.text.Text2.Text = ".live"
+drawings.text.Text2.Text = ".beta"
 drawings.text.Text2.Color = crosshair.textcolor
 drawings.text.Text2.Center = false
 
@@ -128,8 +128,10 @@ runservice.PostSimulation:Connect(function()
             local total_width = text_1.TextBounds.X + text_2.TextBounds.X
             
             text_1.Position = Vector2.new(center.X - (total_width / 2), center.Y + crosshair.textoffset)
+            text_1.Size = crosshair.textsize
             text_2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X, 0)
             text_2.Color = crosshair.textcolor
+            text_2.Size = crosshair.textsize
             
             indicator.Text = crosshair.indicatortext
             indicator.Position = Vector2.new(center.X, center.Y + crosshair.textoffset + 15)
@@ -174,6 +176,3 @@ runservice.PostSimulation:Connect(function()
 end)
 
 return crosshair
-
-
-
