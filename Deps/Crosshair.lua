@@ -132,8 +132,9 @@ runservice.PostSimulation:Connect(function()
             text_2.Position = text_1.Position + Vector2.new(text_1.TextBounds.X, 0)
             text_2.Color = crosshair.textcolor
             text_2.Size = crosshair.textsize
-            
+
             indicator.Text = crosshair.indicatortext
+            indicatod.Size = crosshair.textsize
             indicator.Position = Vector2.new(center.X, center.Y + crosshair.textoffset + 15)
         end
         
@@ -176,3 +177,4 @@ runservice.PostSimulation:Connect(function()
 end)
 
 return crosshair
+
