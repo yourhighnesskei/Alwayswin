@@ -134,7 +134,7 @@ runservice.PostSimulation:Connect(function()
             text_2.Size = crosshair.textsize
 
             indicator.Text = crosshair.indicatortext
-            indicatod.Size = crosshair.textsize
+            indicator.Size = crosshair.textsize
             indicator.Position = Vector2.new(center.X, center.Y + crosshair.textoffset + 15)
         end
         
@@ -177,4 +177,5 @@ runservice.PostSimulation:Connect(function()
 end)
 
 return crosshair
+
 
