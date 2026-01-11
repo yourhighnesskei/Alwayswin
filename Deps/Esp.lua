@@ -1,7 +1,7 @@
 setfpscap(32555555555555555)
 local Config = {
     Box = {
-        Enabled = true,
+        Enabled = false,
         Inline = Color3.fromRGB(0, 0, 0),
         Outline = Color3.fromRGB(0, 0, 0),
         Gradient = {
@@ -869,5 +869,6 @@ connections.main.RenderStepped =
         end
     end
 )
+
 
 return Config
