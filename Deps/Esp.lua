@@ -713,7 +713,7 @@ utility.funcs.update =
             distanceLabel.Position = UDim2.new(0, baseX - (distanceLabel.AbsoluteSize.X / 2), 0, distancePos)
             distanceLabel.TextColor3 = Config.Text.Distance.Color
             distanceLabel.FontFace = Fonts[Config.Text.Font]
-            distanceLabel.Text = utility.funcs.get_case(string.format("[%.0fM]", distance * 0.28), Config.Text.Distance.Casing)
+            distanceLabel.Text = utility.funcs.get_case(string.format("[%.0f]", distance * 0.28), Config.Text.Distance.Casing)
         else
             distanceLabel.Visible = false
         end
@@ -872,3 +872,4 @@ connections.main.RenderStepped =
 
 
 return Config
+
