@@ -288,7 +288,7 @@ utility.funcs.create_box = function(parent, player_name)
     fill_frame.Size = UDim2.new(1, 0, 1, 0)
     fill_frame.Position = UDim2.new(0, 0, 0, 0)
     fill_frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    fill_frame.BackgroundTransparency = 0.3
+    fill_frame.BackgroundTransparency = 0.5
     fill_frame.BorderSizePixel = 0
     fill_frame.Visible = false
     fill_frame.Parent = box_container
@@ -872,4 +872,5 @@ connections.main.RenderStepped =
 
 
 return Config
+
 
