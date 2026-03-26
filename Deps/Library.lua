@@ -5738,89 +5738,78 @@ function Library:SetFont(FontFace)
 end
 
 local Notifications = {}
+local NotificationCount = 0
+local NotificationRemoved = Instance.new("BindableEvent")
+
 function Library.Notify(Content: string, Delay: number)
     assert(typeof(Content) == "string", "missing argument #1, (string expected got " .. typeof(Content) .. ")")
     local Delay = typeof(Delay) == "number" and Delay or 3
 
-    local ScreenSize = workspace.CurrentCamera.ViewportSize
+    local Camera = workspace.CurrentCamera
+    local ScreenSize = Camera.ViewportSize
 
-    local NotificationCount = 0
-    for _ in pairs(Notifications) do
-        NotificationCount += 1
-    end
+    local YOffset = 150
+    local Index = NotificationCount
+    NotificationCount += 1
 
-    local startX = ScreenSize.X / 2 - 100
-    local startY = ScreenSize.Y - 150 - (NotificationCount * 20)
+    local y = ScreenSize.Y - (YOffset + Index * 20)
+    local x = ScreenSize.X / 2
 
     local Text = Drawing.new("Text")
     Text.Text = Content
     Text.Size = 17
-    Text.Font = Drawing.Fonts.Plex
+    Text.Font = Drawing.Fonts.UI
     Text.Color = Color3.new(1, 1, 1)
     Text.Outline = true
     Text.OutlineColor = Color3.new(0, 0, 0)
     Text.Transparency = 0
     Text.Visible = false
-    Text.Position = Vector2.new(startX, startY)
+    Text.Center = true
+    Text.Position = Vector2.new(x, y)
 
     local Notification = {
         self = Text,
+        index = Index,
         Class = "Notification"
     }
+    Notifications[Notification] = Notification
 
-    task.spawn(function()
-        local Steps = 33
-        for i = 1, Steps do
-            Text.Position = Text.Position + Vector2.new(100 / Steps, 0)
-            RunService.RenderStepped:Wait()
+    local connection
+    connection = NotificationRemoved.Event:Connect(function(removedIndex)
+        if Notification.index > removedIndex then
+            Notification.index -= 1
+            y = ScreenSize.Y - (YOffset + Notification.index * 20)
+            Text.Position = Vector2.new(x, y)
+        end
+    end)
+    
+    local elapsed = 0
+    local fadeIn
+    fadeIn = RunService.Heartbeat:Connect(function(dt)
+        elapsed += dt
+        local t = math.min(elapsed / 0.22, 1)
+        Text.Transparency = t
+        Text.Visible = true
+        if t >= 1 then
+            fadeIn:Disconnect()
         end
     end)
 
-    function Notification:Update()
-    end
-
-    function Notification:Destroy()
-        Notifications[self] = nil
-        Text:Remove()
-
-        local Index = 1
-        for _, v in pairs(Notifications) do
-            v.self.Position = v.self.Position + Vector2.new(0, 20)
-            Index += 1
-        end
-    end
-
-    Notifications[Notification] = Notification
-    
-    local fadeIn = TweenService:Create(
-        Text, TweenInfo.new(0), {}
-    )
-
-    task.spawn(function()
-        local Steps = 20
-        for i = 1, Steps do
-            Text.Transparency = i / Steps
-            Text.Visible = true
-            RunService.RenderStepped:Wait()
-        end
-
-        task.delay(Delay, function()
-            task.spawn(function()
-                local Steps = 33
-                local Position = Text.Position
-                for i = 1, Steps do
-                    Position = Position + Vector2.new(100 / Steps, 0)
-                    Text.Position = Position
-                    RunService.RenderStepped:Wait()
-                end
-            end)
-            
-            for i = 20, 0, -1 do
-                Text.Transparency = i / 20
-                RunService.RenderStepped:Wait()
+    task.delay(Delay, function()
+        local elapsed2 = 0
+        local fadeOut
+        fadeOut = RunService.Heartbeat:Connect(function(dt)
+            elapsed2 += dt
+            local t = math.min(elapsed2 / 0.22, 1)
+            Text.Transparency = 1 - t
+            if t >= 1 then
+                fadeOut:Disconnect()
+                Text:Remove()
+                Notifications[Notification] = nil
+                NotificationCount -= 1
+                connection:Disconnect()
+                NotificationRemoved:Fire(Notification.index)
             end
-
-            Notification:Destroy()
         end)
     end)
 end
