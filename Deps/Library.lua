@@ -161,6 +161,11 @@ local Library = {
     KeybindFrame = nil,
     KeybindContainer = nil,
     KeybindToggles = {},
+    
+    NotificationStyle = {
+		Transparency = 0;
+		BarSide = "Left"; -- { "Left", "Right", "Bottom", "Top" };
+	};
 
     Notifications = {},
 
@@ -1314,22 +1319,30 @@ do
 end
 
 --// Notification
-local NotificationArea
-local NotificationList
-do
-    NotificationArea = New("Frame", {
-        AnchorPoint = Vector2.new(1, 0),
-        BackgroundTransparency = 1,
-        Position = UDim2.new(1, -6, 0, 6),
-        Size = UDim2.new(0, 300, 1, -6),
-        Parent = ScreenGui,
-    })
-    NotificationList = New("UIListLayout", {
-        HorizontalAlignment = Enum.HorizontalAlignment.Right,
-        Padding = UDim.new(0, 6),
-        Parent = NotificationArea,
-    })
-end
+local NotificationAreaHolder = New("Frame", {
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0, 0, 0, 39),
+    Size = UDim2.new(0, 2560, 0, 200),
+    ZIndex = 100,
+    Parent = ScreenGui,
+})
+Library.NotificationAreaHolder = NotificationAreaHolder
+
+local NotificationArea = New("Frame", {
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0, 0, 0, 1),
+    Size = UDim2.new(1, 0, 1, 0),
+    ZIndex = 100,
+    Parent = NotificationAreaHolder,
+})
+Library.NotificationArea = NotificationArea
+
+New("UIListLayout", {
+    Padding = UDim.new(0, 4),
+    FillDirection = Enum.FillDirection.Vertical,
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Parent = NotificationArea,
+})
 
 --// Lib Functions \\--
 function Library:GetBetterColor(Color: Color3, Add: number): Color3
@@ -5737,80 +5750,136 @@ function Library:SetFont(FontFace)
     Library:UpdateColorsUsingRegistry()
 end
 
-local Notifications = {}
-local NotificationCount = 0
-local NotificationRemoved = Instance.new("BindableEvent")
+local NotifySettings = {
+    BarPosition = {
+        ["Top"]    = UDim2.new(0, -1, 0, 0),
+        ["Left"]   = UDim2.new(0, -1, 0, -1),
+        ["Right"]  = UDim2.new(1, -2, 0, -1),
+        ["Bottom"] = UDim2.new(0, -1, 1, -2),
+    },
+    BarSize = {
+        ["Top"]    = UDim2.new(1, 3, 0, 2),
+        ["Left"]   = UDim2.new(0, 3, 1, 2),
+        ["Right"]  = UDim2.new(0, 3, 1, 2),
+        ["Bottom"] = UDim2.new(1, 3, 0, 2),
+    },
+}
+
+local _char, _max = string.char, math.max
+
+local get_notification_colors = function()
+    local callback = Library.NotificationStyle.OverrideColor
+    if callback then
+        return callback()
+    end
+    return Library.Scheme.BackgroundColor, Library.Scheme.AccentColor, Library.Scheme.OutlineColor, Library.Scheme.FontColor
+end
+
+local notification_clone
+do
+    local NotifyOuter = New("Frame", {
+        BorderColor3 = Color3.new(0, 0, 0),
+        Position = UDim2.new(0, 100, 0, 10),
+        ClipsDescendants = true,
+        ZIndex = 100,
+    })
+
+    local NotifyInner = New("Frame", {
+        BorderMode = Enum.BorderMode.Inset,
+        Size = UDim2.new(1, 0, 1, 0),
+        ZIndex = 101,
+        Name = "inner",
+        Parent = NotifyOuter,
+    })
+
+    local InnerFrame = New("Frame", {
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, 1, 0, 1),
+        Size = UDim2.new(1, -2, 1, -2),
+        ZIndex = 102,
+        Name = "inner",
+        Parent = NotifyInner,
+    })
+
+    New("UIGradient", {
+        Rotation = -90,
+        Parent = InnerFrame,
+    })
+
+    local NotifyLabel = New("TextLabel", {
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 4, 0, 0),
+        Size = UDim2.new(1, -4, 1, 0),
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextSize = 14,
+        Font = Enum.Font.Code,
+        RichText = true,
+        TextColor3 = Color3.new(1, 1, 1),
+        TextStrokeTransparency = 0,
+        ZIndex = 103,
+        Name = "label",
+        Parent = InnerFrame,
+    })
+
+    New("Frame", {
+        BorderSizePixel = 0,
+        ZIndex = 104,
+        Name = "bar",
+        Parent = NotifyOuter,
+    })
+
+    notification_clone = NotifyOuter
+end
 
 function Library.Notify(Content: string, Delay: number)
     assert(typeof(Content) == "string", "missing argument #1, (string expected got " .. typeof(Content) .. ")")
-    local Delay = typeof(Delay) == "number" and Delay or 3
+    local Delay = typeof(Delay) == "number" and Delay or 5
 
-    local Camera = workspace.CurrentCamera
-    local ScreenSize = Camera.ViewportSize
+    local XSize, YSize = Library:GetTextBounds(Content, Library.Scheme.Font, 14)
+    YSize = YSize + 7
 
-    local YOffset = 150
-    local Index = NotificationCount
-    NotificationCount += 1
+    local transparency = Library.NotificationStyle.Transparency
+    local main, accent, outline, font = get_notification_colors()
 
-    local y = ScreenSize.Y - (YOffset + Index * 20)
-    local x = ScreenSize.X / 2
+    local NotifyOuter = notification_clone:Clone()
+    NotifyOuter.BackgroundColor3 = main
+    NotifyOuter.Name = _char(256 - _max(1, #Content % 256))
+    NotifyOuter.Size = UDim2.new(0, 0, 0, YSize)
+    NotifyOuter.BackgroundTransparency = transparency
 
-    local Text = Drawing.new("Text")
-    Text.Text = Content
-    Text.Size = 17
-    Text.Font = Drawing.Fonts.UI
-    Text.Color = Color3.new(1, 1, 1)
-    Text.Outline = true
-    Text.OutlineColor = Color3.new(0, 0, 0)
-    Text.Transparency = 0
-    Text.Visible = false
-    Text.Center = true
-    Text.Position = Vector2.new(x, y)
+    local NotifyInner = NotifyOuter.inner
+    NotifyInner.BackgroundColor3 = main
+    NotifyInner.BorderColor3 = outline
+    NotifyInner.BackgroundTransparency = transparency
 
-    local Notification = {
-        self = Text,
-        index = Index,
-        Class = "Notification"
-    }
-    Notifications[Notification] = Notification
+    local InnerFrame = NotifyInner.inner
+    InnerFrame.BackgroundTransparency = transparency
 
-    local connection
-    connection = NotificationRemoved.Event:Connect(function(removedIndex)
-        if Notification.index > removedIndex then
-            Notification.index -= 1
-            y = ScreenSize.Y - (YOffset + Notification.index * 20)
-            Text.Position = Vector2.new(x, y)
-        end
-    end)
-    
-    local elapsed = 0
-    local fadeIn
-    fadeIn = RunService.Heartbeat:Connect(function(dt)
-        elapsed += dt
-        local t = math.min(elapsed / 0.22, 1)
-        Text.Transparency = t
-        Text.Visible = true
-        if t >= 1 then
-            fadeIn:Disconnect()
-        end
-    end)
+    local Gradient = InnerFrame.UIGradient
+    Gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Library:GetDarkerColor(main)),
+        ColorSequenceKeypoint.new(1, main),
+    })
 
-    task.delay(Delay, function()
-        local elapsed2 = 0
-        local fadeOut
-        fadeOut = RunService.Heartbeat:Connect(function(dt)
-            elapsed2 += dt
-            local t = math.min(elapsed2 / 0.22, 1)
-            Text.Transparency = 1 - t
-            if t >= 1 then
-                fadeOut:Disconnect()
-                Text:Remove()
-                Notifications[Notification] = nil
-                NotificationCount -= 1
-                connection:Disconnect()
-                NotificationRemoved:Fire(Notification.index)
-            end
-        end)
+    local NotifyLabel = InnerFrame.label
+    NotifyLabel.Text = Content
+    NotifyLabel.TextColor3 = font
+
+    local LeftColor = NotifyOuter.bar
+    LeftColor.BackgroundColor3 = accent
+    LeftColor.Size = NotifySettings.BarSize[Library.NotificationStyle.BarSide] or UDim2.new(0, 3, 1, 2)
+    LeftColor.Position = NotifySettings.BarPosition[Library.NotificationStyle.BarSide]
+
+    NotifyOuter.Parent = NotificationArea
+
+    pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, XSize + 8 + 4, 0, YSize), "Out", "Quad", 0.4, true)
+
+    task.spawn(function()
+        task.wait(Delay)
+        pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, 0, 0, YSize), "Out", "Quad", 0.4, true)
+        task.wait(0.4)
+        NotifyOuter:Destroy()
     end)
 end
 
