@@ -1,0 +1,13 @@
+if (getgenv().AW_LOADED) then
+    return
+end
+getgenv().AW_LOADED = true
+
+script_key = "trial"
+
+if getgenv().GameMode == "Hood Games" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",true))()
+    loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/d396426fcee16f4051596ebf43e645a98c4c3b99d0f23ef548bb422228fff775.lua"))()
+elseif getgenv().GameMode == "Universal" then
+    loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/a6ca7910af84d86a8268df087542a8908fbbd4fff3850473f8841f38f066198b.lua"))()
+end
