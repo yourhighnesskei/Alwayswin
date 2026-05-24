@@ -1,9 +1,7 @@
 if (getgenv().REFO_LOADED) then
-    return
+	return
 end
 getgenv().REFO_LOADED = true
-
-script_key = "trial"
 
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -17,14 +15,14 @@ local function handleGame(gameName)
 	local placeId = game.PlaceId
 
 	if gameName == "Prison Life" then
-		LocalPlayer:Kick("[Reformation.gg] This script does not officially support Prison Life (for now). Please use the Universal option instead. Join our discord for more information.")
+		LocalPlayer:Kick("[Reformation.gg] This script does not officially support Prison Life (for now). Please use the Universal option instead. Join our Discord for more information.")
 		return
 	end
 
 	if gameName == "Hood Games" then
 		for _, blockedId in ipairs(DAHOOD_BLOCKED) do
 			if placeId == blockedId then
-				LocalPlayer:Kick("[Reformation.gg] This script does not support the official Da Hood game. Only Da Hood copies are currently supported. Join our discord for more information.")
+				LocalPlayer:Kick("[Reformation.gg] This script does not support the official Da Hood game. Only Da Hood copies are currently supported. Join our Discord for more information.")
 				return
 			end
 		end
@@ -212,7 +210,7 @@ function Loader:Delete(name)
 end
 
 Loader:Create({
-	Name = "Reformation Loader",
+	Name = "Reformation",
 	Callback = function(SelectedGame)
 		Loader:Delete("Reformation")
 		handleGame(SelectedGame)
