@@ -3,6 +3,8 @@ if (getgenv().REFO_LOADED) then
 end
 getgenv().REFO_LOADED = true
 
+script_key = "trial"
+
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
