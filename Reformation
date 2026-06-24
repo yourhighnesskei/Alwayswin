@@ -17,8 +17,8 @@ local function handleGame(gameName)
 	local placeId = game.PlaceId
 
 	if gameName == "Prison Life" then
-        loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/7fd79d5e2b262e4e0bc5e904355a9364eee21d2ca35e189edfdc2dddcccbb318.lua"))()
-		return
+        LocalPlayer:Kick('DOWN')
+        return
 	end
 
 	if gameName == "Hood Games" then
