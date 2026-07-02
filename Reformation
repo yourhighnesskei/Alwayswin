@@ -3,6 +3,8 @@ if (getgenv().REFO_LOADED) then
 end
 getgenv().REFO_LOADED = true
 
+script_key = "trial"
+
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
@@ -15,13 +17,11 @@ local function handleGame(gameName)
 	local placeId = game.PlaceId
 
 	if gameName == "Prison Life" then
-        getgenv().SCRIPT_KEY = "KEYLESS"
-        loadstring(game:HttpGet("https://api.jnkie.com/api/v1/luascripts/public/960621a780f45d73958a9b950b1d9fc6c8bd37e479066cc89e5b5fdc3351c444/download"))()
+        LocalPlayer:Kick("[Reformation.gg] Down (Updating)")
         return
 	end
 
 	if gameName == "Hood Games" then
-        script_key = "trial"
 		for _, blockedId in ipairs(DAHOOD_BLOCKED) do
 			if placeId == blockedId then
 				LocalPlayer:Kick("[Reformation.gg] This script does not support the official Da Hood game. Only Da Hood copies are currently supported. Join our Discord for more information.")
@@ -34,7 +34,6 @@ local function handleGame(gameName)
 	end
 
 	if gameName == "Universal" then
-        script_key = "trial"
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", true))()
 		loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/a6ca7910af84d86a8268df087542a8908fbbd4fff3850473f8841f38f066198b.lua"))()
 		return
